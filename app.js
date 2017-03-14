@@ -1,4 +1,6 @@
 const XMLHttpRequest = require('xhr2').XMLHttpRequest;
+const readline = require('readline');
+const chalk = require('chalk');
 
 function searchWiki(url) {
   const xhr = new XMLHttpRequest();
@@ -24,3 +26,18 @@ function searchWiki(url) {
   xhr.open('GET', url, true);
   xhr.send();
 }
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question('Welcome to Wikipedia Search \nPress Ctrl/Cmd ^ C At Anytime To Exit \nMake A New Search: ', (search) => {
+  const url = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${search}&profile=strict&format=json`;
+  searchWiki(url);
+});
+
+rl.on('close', () => {
+  console.log('Thank You For Visiting. Have A Nice Day!');
+  process.exit(0);
+});
