@@ -2,6 +2,8 @@ const XMLHttpRequest = require('xhr2').XMLHttpRequest;
 const readline = require('readline');
 const chalk = require('chalk');
 
+const error = chalk.bold.red;
+
 function searchWiki(url) {
   const xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function change() {
@@ -16,9 +18,10 @@ function searchWiki(url) {
       }
 
       if (Object.keys(results).length === 0) {
-        console.log('No results found for your search. Try searching a different word.');
+        console.log(error('No results found for your search. Try searching a different word below'));
       } else {
         console.log(results);
+        console.log(`${chalk.green('Didn\'t find what you are looking for? ') + chalk.green.bold('Search Again')}`);
       }
     }
   };
@@ -32,12 +35,17 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.question('Welcome to Wikipedia Search \nPress Ctrl/Cmd ^ C At Anytime To Exit \nMake A New Search: ', (search) => {
+rl.question(`${chalk.yellow.bgBlue.bold('Welcome to Wikipedia Search') + error('\nPress Ctrl/Cmd ^ C At Anytime To Exit')}\nMake A New Search: `, (search) => {
+  const url = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${search}&profile=strict&format=json`;
+  searchWiki(url);
+});
+
+rl.on('line', (search) => {
   const url = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${search}&profile=strict&format=json`;
   searchWiki(url);
 });
 
 rl.on('close', () => {
-  console.log('Thank You For Visiting. Have A Nice Day!');
+  console.log(`${chalk.green.bold('Thank You For Visiting. Have A Nice Day!')}`);
   process.exit(0);
 });
